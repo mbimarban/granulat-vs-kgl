@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRANULAT — Pełna Analiza Finansowa 2023–2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0D0D0D;
+    --paper: #F7F4EE;
+    --rule: #C8C0B0;
+    --accent: #1A3A5C;
+    --accent2: #2E7EB8;
+    --red: #8B1A1A;
+    --red-lt: #FDF0F0;
+    --green: #1A5C2E;
+    --green-lt: #EFF7F2;
+    --amber: #8B5A0A;
+    --amber-lt: #FDF5E6;
+    --neutral: #6B6258;
+    --bg: #EFEAE0;
+    --bg2: #E8E2D8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--ink);font-size:13.5px;line-height:1.6;}
+
+  /* NAV */
+  .toc{position:sticky;top:0;z-index:100;background:var(--ink);display:flex;align-items:center;gap:0;overflow-x:auto;}
+  .toc a{color:#C8C0B0;text-decoration:none;padding:12px 18px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;white-space:nowrap;border-right:1px solid rgba(255,255,255,0.08);transition:color 0.2s,background 0.2s;}
+  .toc a:hover{color:#fff;background:rgba(255,255,255,0.07);}
+  .toc-brand{color:white;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;padding:12px 20px;border-right:1px solid rgba(255,255,255,0.2);flex-shrink:0;}
+
+  /* COVER */
+  .cover{background:var(--ink);color:var(--paper);padding:72px 60px 56px;position:relative;overflow:hidden;}
+  .cover::after{content:'';position:absolute;right:-40px;top:-40px;width:340px;height:340px;border-radius:50%;border:1px solid rgba(255,255,255,0.05);}
+  .cover::before{content:'';position:absolute;right:60px;top:60px;width:200px;height:200px;border-radius:50%;border:1px solid rgba(255,255,255,0.07);}
+  .cover-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:#7EB8E8;margin-bottom:32px;}
+  .cover h1{font-family:'Playfair Display',serif;font-size:64px;font-weight:900;line-height:0.95;letter-spacing:-0.02em;margin-bottom:12px;}
+  .cover-sub{font-size:17px;color:#C8C0B0;font-weight:300;margin-bottom:48px;max-width:600px;}
+  .cover-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.1);max-width:780px;}
+  .ckpi{background:rgba(255,255,255,0.04);padding:20px 16px;}
+  .ckpi label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#7EB8E8;display:block;margin-bottom:6px;}
+  .ckpi .val{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;line-height:1;}
+  .ckpi .chg{font-size:11px;margin-top:4px;}
+  .pos{color:#6BC07A;} .neg{color:#E07070;} .warn{color:#E8B34B;}
+
+  /* LAYOUT */
+  .wrap{max-width:1160px;margin:0 auto;padding:0 40px;}
+  section{padding:56px 0;border-bottom:1px solid var(--rule);}
+  .sec-label{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.3em;text-transform:uppercase;color:var(--neutral);margin-bottom:10px;}
+  .sec-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;line-height:1.2;margin-bottom:6px;}
+  .sec-insight{font-size:14px;color:var(--neutral);font-style:italic;max-width:700px;margin-bottom:36px;}
+
+  /* TABLES */
+  table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:8px;}
+  th{padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--neutral);border-bottom:2px solid var(--accent);background:var(--bg);text-align:right;}
+  th:first-child{text-align:left;}
+  td{padding:9px 14px;vertical-align:middle;border-bottom:1px solid var(--bg);}
+  td:not(:first-child){text-align:right;font-family:'IBM Plex Mono',monospace;}
+  tr:hover td{background:rgba(0,0,0,0.015);}
+  tr.grp td{background:var(--bg);font-weight:600;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-size:11px;letter-spacing:0.05em;}
+  tr.tot td{font-weight:700;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);background:rgba(26,58,92,0.04);}
+  tr.sub td{color:var(--neutral);font-size:12px;}
+  .n-red{color:var(--red);font-weight:600;}
+  .n-grn{color:var(--green);font-weight:600;}
+  .n-amb{color:var(--amber);font-weight:600;}
+  .n-neu{color:var(--neutral);}
+
+  /* CHARTS (pure CSS bars) */
+  .chart-wrap{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:32px;}
+  .chart-box{border:1px solid var(--rule);padding:24px;}
+  .chart-title{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--neutral);margin-bottom:20px;padding-bottom:8px;border-bottom:1px solid var(--rule);}
+  .bar-row{margin-bottom:14px;}
+  .bar-lbl{display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:4px;}
+  .bar-lbl .yr{color:var(--neutral);}
+  .bar-track{height:22px;background:var(--bg);position:relative;overflow:hidden;}
+  .bar-fill{height:100%;display:flex;align-items:center;padding-left:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:white;font-weight:500;}
+  .bf-1{background:var(--accent);}
+  .bf-2{background:var(--accent2);}
+  .bf-3{background:#5B8FB9;}
+  .bf-neg{background:var(--red);}
+  .bf-amb{background:var(--amber);}
+  .bf-grn{background:var(--green);}
+
+  /* FLAG TABLE */
+  .flags{width:100%;border-collapse:collapse;}
+  .flags th{background:var(--ink);color:var(--paper);padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;text-align:center;border:none;}
+  .flags th:first-child{text-align:left;}
+  .flags td{padding:9px 14px;border-bottom:1px solid var(--bg);text-align:center;}
+  .flags td:first-child{text-align:left;font-weight:500;}
+  .flags tr:last-child td{border-bottom:none;}
+  .flag-ok{background:#E8F5EE;color:var(--green);font-weight:600;border-radius:2px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:11px;}
+  .flag-warn{background:#FDF5E6;color:var(--amber);font-weight:600;border-radius:2px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:11px;}
+  .flag-red{background:var(--red-lt);color:var(--red);font-weight:600;border-radius:2px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:11px;}
+  .flag-na{background:var(--bg);color:var(--neutral);border-radius:2px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:11px;}
+
+  /* VERDICT */
+  .verdict{background:var(--ink);color:var(--paper);padding:48px 60px;}
+  .v-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;}
+  .v-col h4{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.15);}
+  .v-col h4.red{color:#E87E7E;}
+  .v-col h4.amber{color:#E8C47E;}
+  .v-col h4.blue{color:#7EB8E8;}
+  .v-item{display:flex;gap:10px;margin-bottom:10px;font-size:12.5px;line-height:1.5;color:#D0C8BE;}
+  .v-icon{flex-shrink:0;margin-top:1px;}
+
+  /* SCORECARD */
+  .scores{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:40px;}
+  .sc{background:var(--paper);padding:16px 12px;text-align:center;}
+  .sc-metric{font-size:9.5px;text-transform:uppercase;letter-spacing:0.1em;color:var(--neutral);margin-bottom:8px;}
+  .sc-val{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;}
+  .sc-trend{font-size:10px;margin-top:3px;}
+  .sc-r{color:var(--red);} .sc-g{color:var(--green);} .sc-a{color:var(--amber);}
+
+  .footnote{padding:24px 40px;font-size:11px;color:var(--neutral);font-style:italic;background:var(--bg);border-top:1px solid var(--rule);}
+</style>
+</head>
+<body>
+
+<nav class="toc">
+  <div class="toc-brand">GRANULAT</div>
+  <a href="#rzis">P&L</a>
+  <a href="#wskazniki">Wskaźniki</a>
+  <a href="#trend">Trend YoY</a>
+  <a href="#vertical">Vertical %</a>
+  <a href="#cashflow">Cash Flow</a>
+  <a href="#flagi">Flagi</a>
+  <a href="#diagnoza">Diagnoza</a>
+</nav>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-label">Analiza Finansowa · Standalone · Dane ze Sprawozdań</div>
+  <h1>GRANULAT</h1>
+  <div class="cover-sub">Pełna analiza wyników finansowych 2023–2025 — P&L, bilans, cash flow, wskaźniki, flagi ryzyka i diagnoza strategiczna</div>
+  <div class="cover-kpis">
+    <div class="ckpi"><label>Przychody 2025</label><div class="val">160,4M</div><div class="chg pos">▲ +10,5%</div></div>
+    <div class="ckpi"><label>EBIT 2025</label><div class="val">3,05M</div><div class="chg neg">▼ −26,5%</div></div>
+    <div class="ckpi"><label>CFO 2025</label><div class="val">4,31M</div><div class="chg neg">▼ −16,4%</div></div>
+    <div class="ckpi"><label>CCR 2025</label><div class="val">2,60</div><div class="chg pos">▲ vs −0,46 w '23</div></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ── 1. P&L ── -->
+<section id="rzis">
+  <div class="sec-label">Sekcja 1 z 6</div>
+  <div class="sec-title">Rachunek Zysków i Strat</div>
+  <div class="sec-insight">Wzrost sprzedaży +10,5% w 2025 jest prawdziwy — ale EBIT spada o 26,5%. Koszty rosną szybciej niż przychody. Każda złotówka dodatkowego obrotu kupiona jest kosztem marży.</div>
+
+  <table>
+    <thead>
+      <tr><th>Pozycja</th><th>2023 (PLN)</th><th>2024 (PLN)</th><th>2025 (PLN)</th><th>Δ 24/23</th><th>Δ 25/24</th></tr>
+    </thead>
+    <tbody>
+      <tr class="tot"><td>Przychody ze sprzedaży</td><td>145 122 118</td><td>145 089 591</td><td>160 390 043</td><td class="n-neu">−0,0%</td><td class="n-grn">+10,5%</td></tr>
+      <tr><td>COGS (wartość sprzedanych tow.)</td><td>131 829 883</td><td>130 951 938</td><td>146 736 043</td><td class="n-grn">−0,7%</td><td class="n-red">+12,1%</td></tr>
+      <tr class="tot"><td>Zysk brutto na sprzedaży (GP)</td><td>13 292 235</td><td>14 137 653</td><td>13 653 999</td><td class="n-grn">+6,4%</td><td class="n-red">−3,4%</td></tr>
+      <tr class="sub"><td>&nbsp;&nbsp; Marża brutto na sprzedaży</td><td>9,16%</td><td>9,74%</td><td>8,51%</td><td class="n-grn">+0,58 pp</td><td class="n-red">−1,23 pp</td></tr>
+      <tr><td>Usługi obce</td><td>4 162 tys.*</td><td>5 248 tys.*</td><td>6 181 tys.*</td><td class="n-red">+26,1%</td><td class="n-red">+17,8%</td></tr>
+      <tr><td>Wynagrodzenia</td><td>2 076 tys.*</td><td>2 584 tys.*</td><td>2 605 tys.*</td><td class="n-red">+24,5%</td><td class="n-grn">+0,8%</td></tr>
+      <tr><td>Amortyzacja</td><td>870 tys.*</td><td>1 102 tys.*</td><td>787 tys.*</td><td class="n-red">+26,6%</td><td class="n-grn">−28,5%</td></tr>
+      <tr class="tot"><td>Zysk ze sprzedaży (EBIT sprzedażowy)</td><td>4 564 053</td><td>3 511 925</td><td>2 382 676</td><td class="n-red">−23,1%</td><td class="n-red">−32,1%</td></tr>
+      <tr class="sub"><td>&nbsp;&nbsp; Marża na sprzedaży</td><td>3,14%</td><td>2,42%</td><td>1,49%</td><td class="n-red">−0,72 pp</td><td class="n-red">−0,93 pp</td></tr>
+      <tr class="tot"><td>EBIT (zysk operacyjny)</td><td>4 713 040</td><td>4 157 479</td><td>3 054 542</td><td class="n-red">−11,8%</td><td class="n-red">−26,5%</td></tr>
+      <tr class="sub"><td>&nbsp;&nbsp; Marża EBIT</td><td>3,25%</td><td>2,87%</td><td>1,90%</td><td class="n-red">−0,38 pp</td><td class="n-red">−0,97 pp</td></tr>
+      <tr><td>Koszty odsetek</td><td>1 648 459</td><td>1 648 637</td><td>1 547 980</td><td class="n-neu">+0,0%</td><td class="n-grn">−6,1%</td></tr>
+      <tr class="tot"><td>Zysk netto</td><td>3 109 534</td><td>2 054 126</td><td>1 658 092</td><td class="n-red">−33,9%</td><td class="n-red">−19,3%</td></tr>
+      <tr class="sub"><td>&nbsp;&nbsp; Marża netto</td><td>2,14%</td><td>1,42%</td><td>1,03%</td><td class="n-red">−0,72 pp</td><td class="n-red">−0,39 pp</td></tr>
+    </tbody>
+  </table>
+  <div style="font-size:11px;color:var(--neutral);font-style:italic;margin-top:6px;">* Usługi obce, wynagrodzenia, amortyzacja — kwoty szacowane na podstawie danych % z analizy pionowej (vertical analysis); preferowane jest zastąpienie wartościami ze sprawozdania przed finalną publikacją.</div>
+
+  <!-- BARS: P&L -->
+  <div class="chart-wrap" style="margin-top:32px;">
+    <div class="chart-box">
+      <div class="chart-title">Marża brutto — kierunek V-kształtny</div>
+      <div class="bar-row"><div class="bar-lbl"><span>2023</span><span class="yr">9,16%</span></div><div class="bar-track"><div class="bar-fill bf-1" style="width:64%;">9,16%</div></div></div>
+      <div class="bar-row"><div class="bar-lbl"><span>2024</span><span class="yr n-grn">9,74%</span></div><div class="bar-track"><div class="bar-fill bf-2" style="width:68%;">9,74%</div></div></div>
+      <div class="bar-row"><div class="bar-lbl"><span>2025</span><span class="yr n-red">8,51%</span></div><div class="bar-track"><div class="bar-fill bf-amb" style="width:59%;">8,51%</div></div></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Marża EBIT — nieodwracalny trend spadkowy</div>
+      <div class="bar-row"><div class="bar-lbl"><span>2023</span><span class="yr n-grn">3,25%</span></div><div class="bar-track"><div class="bar-fill bf-grn" style="width:100%;">3,25%</div></div></div>
+      <div class="bar-row"><div class="bar-lbl"><span>2024</span><span class="yr n-amb">2,87%</span></div><div class="bar-track"><div class="bar-fill bf-2" style="width:88%;">2,87%</div></div></div>
+      <div class="bar-row"><div class="bar-lbl"><span>2025</span><span class="yr n-red">1,90%</span></div><div class="bar-track"><div class="bar-fill bf-neg" style="width:58%;">1,90%</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 2. WSKAŹNIKI ── -->
+<section id="wskazniki">
+  <div class="sec-label">Sekcja 2 z 6</div>
+  <div class="sec-title">Tablica Wskaźników</div>
+  <div class="sec-insight">Płynność utrzymana, ale Interest Coverage spada poniżej 2x w 2025 — sygnał żółty. ROE kurczy się z 22,9% do 10,8% w trzy lata. Zadłużenie strukturalnie wysokie i stabilne.</div>
+
+  <div class="scores">
+    <div class="sc"><div class="sc-metric">Current Ratio</div><div class="sc-val sc-g">2,25</div><div class="sc-trend">2,58 → 2,30 → 2,25</div></div>
+    <div class="sc"><div class="sc-metric">Quick Ratio</div><div class="sc-val sc-a">0,83</div><div class="sc-trend">0,84 → 0,81 → 0,83</div></div>
+    <div class="sc"><div class="sc-metric">Cash Ratio</div><div class="sc-val sc-r">0,03</div><div class="sc-trend">0,04 → 0,01 → 0,03</div></div>
+    <div class="sc"><div class="sc-metric">Debt/Equity</div><div class="sc-val sc-r">2,67</div><div class="sc-trend">2,63 → 2,66 → 2,67</div></div>
+    <div class="sc"><div class="sc-metric">Interest Coverage</div><div class="sc-val sc-r">1,97x</div><div class="sc-trend">2,86 → 2,52 → ⚠ 1,97</div></div>
+    <div class="sc"><div class="sc-metric">CCR</div><div class="sc-val sc-g">2,60</div><div class="sc-trend">−0,46 → 2,51 → 2,60</div></div>  </div>
+
+  <table>
+    <thead>
+      <tr><th>Wskaźnik</th><th>2023</th><th>2024</th><th>2025</th><th>Próg alarmowy</th><th>Status 2025</th></tr>
+    </thead>
+    <tbody>
+      <tr class="grp"><td colspan="6">PŁYNNOŚĆ</td></tr>
+      <tr><td>Current Ratio</td><td>2,58</td><td>2,30</td><td>2,25</td><td>&lt; 1,5 = alarm</td><td class="n-grn">✓ OK</td></tr>
+      <tr><td>Quick Ratio</td><td>0,84</td><td>0,81</td><td>0,83</td><td>&lt; 1,0 = uwaga</td><td class="n-amb">⚠ Zapasowy</td></tr>
+      <tr><td>Cash Ratio</td><td>0,04</td><td>0,01</td><td>0,03</td><td>&lt; 0,1 = niski</td><td class="n-red">✗ Bardzo niski</td></tr>
+      <tr class="grp"><td colspan="6">ZADŁUŻENIE</td></tr>
+      <tr><td>Debt to Equity</td><td>2,63</td><td>2,66</td><td>2,67</td><td>&gt; 2,0 = wysoki</td><td class="n-red">✗ Wysoki / stabilny</td></tr>
+      <tr><td>Debt to Assets</td><td>0,72</td><td>0,73</td><td>0,73</td><td>&gt; 0,6 = podwyższony</td><td class="n-red">✗ Podwyższony</td></tr>
+      <tr class="grp"><td colspan="6">RENTOWNOŚĆ</td></tr>
+      <tr><td>Net Profit Margin</td><td>2,14%</td><td>1,42%</td><td class="n-red">1,03%</td><td></td><td class="n-red">↓ Trend spadkowy</td></tr>
+      <tr><td>ROA</td><td>6,31%</td><td>3,84%</td><td class="n-red">2,95%</td><td></td><td class="n-red">↓ Silna erozja</td></tr>
+      <tr><td>ROE</td><td>22,90%</td><td>14,04%</td><td class="n-red">10,84%</td><td></td><td class="n-red">↓ Spadek z 23% do 11%</td></tr>
+      <tr class="grp"><td colspan="6">GOTÓWKA I OBSŁUGA DŁUGU</td></tr>
+      <tr><td>CCC (dni)</td><td>86</td><td>81</td><td class="n-grn">71</td><td></td><td class="n-grn">✓ Poprawa cyklu</td></tr>
+      <tr><td>CCR = CFO / zysk netto</td><td class="n-red">−0,46</td><td>2,51</td><td class="n-grn">2,60</td><td>&lt; 1,0 = uwaga</td><td class="n-grn">✓ Dobra konwersja</td></tr>
+      <tr><td>CFS = Cash Flow Sales (zysk ze sprzedaży − ΔKON)</td><td>n/d</td><td>4 775 817</td><td>3 153 766</td><td></td><td class="n-amb">⚠ Spada wraz z wynikiem</td></tr>
+      <tr class="tot"><td>Interest Coverage (EBIT/odsetki)</td><td>2,86x</td><td>2,52x</td><td class="n-red">1,97x</td><td>&lt; 2,0 = ryzyko</td><td class="n-red">✗ Poniżej 2x — ALARM</td></tr>
+      <tr class="grp"><td colspan="6">CYKL KONWERSJI GOTÓWKI</td></tr>
+      <tr><td>DSO (dni należności)</td><td>33</td><td>44</td><td>42</td><td></td><td class="n-amb">⚠ Wydłużony vs '23</td></tr>
+      <tr><td>DIO (dni zapasów)</td><td>81</td><td>91</td><td>83</td><td></td><td class="n-amb">⚠ Wysoki, ale spada</td></tr>
+      <tr><td>DPO (dni zobowiązań)</td><td>29</td><td>53</td><td>54</td><td></td><td class="n-amb">↑ Finansowanie dostawcami</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ── 3. TREND YoY ── -->
+<section id="trend">
+  <div class="sec-label">Sekcja 3 z 6</div>
+  <div class="sec-title">Analiza Trendów YoY</div>
+  <div class="sec-insight">W 2025 roku wzrost sprzedaży +10,5% jest realny, ale COGS rośnie +12,1%, usługi obce +17,8%. Wynik: EBIT spada −26,5%. Przychody rosną, zyski kurczą się — klasyczna pułapka wzrostowa.</div>
+
+  <table>
+    <thead>
+      <tr><th>Pozycja</th><th>2024 vs 2023</th><th>2025 vs 2024</th><th>Ocena 2025</th></tr>
+    </thead>
+    <tbody>
+      <tr class="tot"><td>Przychody ze sprzedaży</td><td class="n-neu">−0,02%</td><td class="n-grn">+10,55%</td><td class="n-grn">✓ Solidny wzrost wolumenu</td></tr>
+      <tr><td>COGS</td><td class="n-grn">−0,67%</td><td class="n-red">+12,05%</td><td class="n-red">✗ Rośnie szybciej niż sprzedaż (+1,5 pp)</td></tr>
+      <tr><td>Usługi obce</td><td class="n-red">+26,08%</td><td class="n-red">+17,77%</td><td class="n-red">✗ Trwały wzrost kosztów zewnętrznych</td></tr>
+      <tr><td>Wynagrodzenia</td><td class="n-red">+24,48%</td><td class="n-grn">+0,81%</td><td class="n-grn">✓ Wyhamowanie — brak nowych zatrudnień</td></tr>
+      <tr><td>Amortyzacja</td><td class="n-red">+26,62%</td><td class="n-grn">−28,50%</td><td class="n-grn">✓ Spadek — stary majątek amortyzuje się</td></tr>
+      <tr class="tot"><td>Zysk operacyjny (EBIT)</td><td class="n-red">−11,79%</td><td class="n-red">−26,53%</td><td class="n-red">✗ ALARM — EBIT spada przy rosnącej sprzedaży</td></tr>
+      <tr><td>Zysk netto</td><td class="n-red">−33,94%</td><td class="n-red">−19,28%</td><td class="n-red">✗ Trzy lata konsekutywnych spadków</td></tr>
+    </tbody>
+  </table>
+
+  <div class="chart-wrap" style="margin-top:28px;">
+    <div class="chart-box">
+      <div class="chart-title">Dynamika kosztów vs sprzedaży — 2025 (punkt bazowy: 100 = 2024)</div>
+      <div class="bar-row"><div class="bar-lbl"><span>Przychody</span><span class="yr n-grn">+10,6%</span></div><div class="bar-track"><div class="bar-fill bf-grn" style="width:73%;">+10,6%</div></div></div>
+      <div class="bar-row"><div class="bar-lbl"><span>COGS</span><span class="yr n-red">+12,1%</span></div><div class="bar-track"><div class="bar-fill bf-neg" style="width:80%;">+12,1%</div></div></div>
+      <div class="bar-row"><div class="bar-lbl"><span>Usługi obce</span><span class="yr n-red">+17,8%</span></div><div class="bar-track"><div class="bar-fill bf-neg" style="width:100%;">+17,8%</div></div></div>
+      <div class="bar-row"><div class="bar-lbl"><span>Wynagrodzenia</span><span class="yr n-grn">+0,8%</span></div><div class="bar-track"><div class="bar-fill bf-grn" style="width:5%;">&nbsp;</div></div></div>
+      <div class="bar-row"><div class="bar-lbl"><span>EBIT</span><span class="yr n-red">−26,5%</span></div><div class="bar-track" style="background:var(--red-lt);"><div style="width:100%;height:100%;display:flex;align-items:center;padding-left:8px;"><span style="color:var(--red);font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;">SPADEK −26,5%</span></div></div></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Zysk netto — 3-letni trend spadkowy (PLN)</div>
+      <div class="bar-row"><div class="bar-lbl"><span>2023</span><span class="yr n-grn">3 109 534 PLN</span></div><div class="bar-track"><div class="bar-fill bf-grn" style="width:100%;">3,11 mln</div></div></div>
+      <div class="bar-row"><div class="bar-lbl"><span>2024</span><span class="yr n-amb">2 054 126 PLN</span></div><div class="bar-track"><div class="bar-fill bf-amb" style="width:66%;">2,05 mln</div></div></div>
+      <div class="bar-row"><div class="bar-lbl"><span>2025</span><span class="yr n-red">1 658 092 PLN</span></div><div class="bar-track"><div class="bar-fill bf-neg" style="width:53%;">1,66 mln</div></div></div>
+      <div style="margin-top:12px;padding:10px;background:var(--red-lt);border-left:3px solid var(--red);">
+        <div style="font-size:11px;color:var(--red);font-weight:600;">−46,7% zysku netto w ciągu 3 lat</div>
+        <div style="font-size:11px;color:var(--neutral);margin-top:2px;">Przychody wzrosły +10,5%. Zysk skurczył się o połowę.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 4. VERTICAL ── -->
+<section id="vertical">
+  <div class="sec-label">Sekcja 4 z 6</div>
+  <div class="sec-title">Analiza Pionowa (% przychodów)</div>
+  <div class="sec-insight">COGS wrócił powyżej 91% przychodów — poziom wyższy niż w 2023. Usługi obce „zjadają" już 3,86% vs 2,87% dwa lata temu. Łącznie: każda pozycja kosztowa poza amortyzacją rośnie jako procent przychodów.</div>
+
+  <table>
+    <thead>
+      <tr><th>Pozycja</th><th>2023 (% sprzed.)</th><th>2024 (% sprzed.)</th><th>2025 (% sprzed.)</th><th>Zmiana '23→'25</th><th>Ocena</th></tr>
+    </thead>
+    <tbody>
+      <tr class="tot"><td>COGS</td><td>90,84%</td><td>90,26%</td><td class="n-red">91,49%</td><td class="n-red">+0,65 pp</td><td class="n-red">✗ Presja zakupowa lub mix</td></tr>
+      <tr><td>Usługi obce</td><td>2,87%</td><td>3,62%</td><td class="n-red">3,86%</td><td class="n-red">+0,99 pp</td><td class="n-red">✗ Najsilniejszy wzrost kosztowy</td></tr>
+      <tr><td>Wynagrodzenia</td><td>1,43%</td><td>1,78%</td><td>1,63%</td><td class="n-amb">+0,20 pp</td><td class="n-amb">⚠ Wzrost r/r, lekki regres '25</td></tr>
+      <tr><td>Amortyzacja</td><td>0,60%</td><td>0,76%</td><td class="n-grn">0,49%</td><td class="n-grn">−0,11 pp</td><td class="n-grn">✓ Jedyna pozycja malejąca</td></tr>
+      <tr class="tot"><td>EBIT</td><td class="n-grn">3,25%</td><td>2,87%</td><td class="n-red">1,90%</td><td class="n-red">−1,35 pp</td><td class="n-red">✗ Silna erozja marży oper.</td></tr>
+      <tr><td>Zysk netto</td><td class="n-grn">2,14%</td><td>1,42%</td><td class="n-red">1,03%</td><td class="n-red">−1,11 pp</td><td class="n-red">✗ Zbliża się do granicy 1%</td></tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:28px;border:1px solid var(--rule);padding:20px 24px;background:var(--bg);">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--neutral);margin-bottom:14px;">Dekompozycja 1 PLN przychodu — co zostaje jako zysk operacyjny</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+      <div>
+        <div style="font-size:11px;color:var(--neutral);margin-bottom:6px;">2023 — z 1 PLN przychodu</div>
+        <div style="height:16px;background:var(--red);width:90.84%;margin-bottom:2px;position:relative;"><span style="position:absolute;right:4px;top:0;color:white;font-size:9px;line-height:16px;">COGS 90,8%</span></div>
+        <div style="height:10px;background:#B8860B;width:2.87%;margin-bottom:2px;"></div>
+        <div style="height:10px;background:#5B4A3A;width:2.03%;margin-bottom:2px;"></div>
+        <div style="height:14px;background:var(--green);width:3.25%;"><span style="color:white;font-size:9px;padding-left:3px;line-height:14px;display:block;">EBIT 3,25%</span></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--neutral);margin-bottom:6px;">2024 — z 1 PLN przychodu</div>
+        <div style="height:16px;background:var(--red);width:90.26%;margin-bottom:2px;position:relative;"><span style="position:absolute;right:4px;top:0;color:white;font-size:9px;line-height:16px;">COGS 90,3%</span></div>
+        <div style="height:10px;background:#B8860B;width:3.62%;margin-bottom:2px;"></div>
+        <div style="height:10px;background:#5B4A3A;width:2.54%;margin-bottom:2px;"></div>
+        <div style="height:14px;background:#2E7EB8;width:2.87%;"><span style="color:white;font-size:9px;padding-left:3px;line-height:14px;display:block;">2,87%</span></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--neutral);margin-bottom:6px;">2025 — z 1 PLN przychodu</div>
+        <div style="height:16px;background:var(--red);width:91.49%;margin-bottom:2px;position:relative;"><span style="position:absolute;right:4px;top:0;color:white;font-size:9px;line-height:16px;">COGS 91,5%</span></div>
+        <div style="height:10px;background:#B8860B;width:3.86%;margin-bottom:2px;"></div>
+        <div style="height:10px;background:#5B4A3A;width:2.12%;margin-bottom:2px;"></div>
+        <div style="height:14px;background:#8B5A0A;width:1.90%;"><span style="color:white;font-size:9px;padding-left:3px;line-height:14px;display:block;">1,90%</span></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:10px;font-size:10.5px;color:var(--neutral);">
+      <span>&#9632; COGS</span><span style="color:#B8860B;">&#9632; Usługi obce</span><span style="color:#5B4A3A;">&#9632; Wynagrodzenia + amortyzacja</span><span style="color:var(--green);">&#9632; EBIT</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── 5. CASH FLOW / WC ── -->
+<section id="cashflow">
+  <div class="sec-label">Sekcja 5 z 6</div>
+  <div class="sec-title">Cash Flow i Kapitał Obrotowy</div>
+  <div class="sec-insight">CFO pozytywne w 2024–2025 — to dobra wiadomość. Ale główna dźwignia poprawy to wzrost zobowiązań handlowych (+108% w 2 lata). KON spada dzięki dostawcom, nie dzięki zarządzaniu należnościami czy zapasami.</div>
+
+  <table>
+    <thead>
+      <tr><th>Pozycja</th><th>2023 (PLN)</th><th>2024 (PLN)</th><th>2025 (PLN)</th><th>Ocena</th></tr>
+    </thead>
+    <tbody>
+      <tr class="grp"><td colspan="5">Bilans kapitału obrotowego</td></tr>
+      <tr><td>Należności handlowe (AR)</td><td>13 243 434</td><td>17 372 955</td><td>18 515 723</td><td class="n-amb">⚠ +40% w 2 lata — rośnie szybciej niż sprzedaż</td></tr>
+      <tr><td>Zapasy</td><td>29 391 006</td><td>32 645 478</td><td>33 439 779</td><td class="n-amb">⚠ +13,8% — przyrost zapasów vs +10,5% sprzedaży</td></tr>
+      <tr><td>Zobowiązania handlowe (AP)</td><td>10 456 743</td><td>19 104 628</td><td>21 812 787</td><td class="n-red">↑ +108% — główna dźwignia WC!</td></tr>
+      <tr class="tot"><td>KON = AR + Zapasy − AP</td><td>32 177 698</td><td>30 913 805</td><td>30 142 715</td><td class="n-grn">✓ Spada — ale mechanizm jest AP, nie AR/INV</td></tr>
+      <tr class="sub"><td>&nbsp;&nbsp; Zmiana KON r/r</td><td>—</td><td>−1 263 892</td><td>−771 090</td><td class="n-grn">✓ Uwalnia gotówkę</td></tr>
+      <tr class="grp"><td colspan="5">Cash Flow</td></tr>
+      <tr><td>Zysk ze sprzedaży</td><td>4 564 053</td><td>3 511 925</td><td>2 382 676</td><td></td></tr>
+      <tr><td>CFS = Cash Flow Sales (zysk ze sprzedaży − ΔKON)</td><td>n/d</td><td>4 775 817</td><td>3 153 766</td><td class="n-amb">⚠ Spada wraz z wynikiem operacyjnym</td></tr>
+      <tr class="tot"><td>CFO (operacyjny CF)</td><td class="n-red">−1 435 473</td><td class="n-grn">5 150 547</td><td class="n-grn">4 308 335</td><td class="n-grn">✓ Pozytywny — ale trend zniżkowy</td></tr>
+      <tr><td>CCR = CFO / zysk netto</td><td class="n-red">−0,46</td><td class="n-grn">2,51</td><td class="n-grn">2,60</td><td class="n-grn">✓ Jakość zysku dobra</td></tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <div style="border:1px solid var(--rule);padding:20px;">
+      <div class="chart-title">Dekompozycja KON — co napędza poprawę?</div>
+      <div style="font-size:12px;color:var(--neutral);margin-bottom:12px;">Zmiana 2023→2025 w mln PLN:</div>
+      <div class="bar-row"><div class="bar-lbl"><span>AR rośnie (→ gorzej)</span><span class="yr n-red">+5,27 mln</span></div><div class="bar-track" style="background:var(--red-lt);"><div class="bar-fill bf-neg" style="width:45%;">+5,3 mln</div></div></div>
+      <div class="bar-row"><div class="bar-lbl"><span>Zapasy rosną (→ gorzej)</span><span class="yr n-amb">+4,05 mln</span></div><div class="bar-track" style="background:var(--amber-lt);"><div class="bar-fill bf-amb" style="width:35%;">+4,0 mln</div></div></div>
+      <div class="bar-row"><div class="bar-lbl"><span>AP rośnie (→ lepiej)</span><span class="yr n-grn">+11,36 mln</span></div><div class="bar-track"><div class="bar-fill bf-grn" style="width:100%;">+11,4 mln</div></div></div>
+      <div style="margin-top:10px;padding:10px;background:var(--amber-lt);border-left:3px solid var(--amber);font-size:11px;color:var(--amber);">
+        <strong>Wniosek:</strong> Poprawa KON = 100% wyjaśniona wzrostem AP. Bez wydłużania terminów płatności dostawcom — KON byłoby wyższe o 11,4 mln PLN.
+      </div>
+    </div>
+    <div style="border:1px solid var(--rule);padding:20px;">
+      <div class="chart-title">CFO vs zysk netto — jakość konwersji gotówki</div>
+      <div class="bar-row"><div class="bar-lbl"><span>CFO 2023</span><span class="yr n-red">−1,44 mln</span></div><div class="bar-track" style="background:var(--red-lt);"><div style="height:100%;display:flex;align-items:center;padding-left:8px;"><span style="color:var(--red);font-size:10px;font-family:'IBM Plex Mono',monospace;">UJEMNY</span></div></div></div>
+      <div class="bar-row"><div class="bar-lbl"><span>CFO 2024</span><span class="yr n-grn">5,15 mln</span></div><div class="bar-track"><div class="bar-fill bf-grn" style="width:100%;">5,15 mln</div></div></div>
+      <div class="bar-row"><div class="bar-lbl"><span>CFO 2025</span><span class="yr n-amb">4,31 mln</span></div><div class="bar-track"><div class="bar-fill bf-2" style="width:84%;">4,31 mln</div></div></div>
+      <div style="height:12px;"></div>
+      <div class="bar-row"><div class="bar-lbl"><span>Zysk netto 2024</span><span class="yr">2,05 mln</span></div><div class="bar-track"><div class="bar-fill bf-1" style="width:40%;">2,05 mln</div></div></div>
+      <div class="bar-row"><div class="bar-lbl"><span>Zysk netto 2025</span><span class="yr">1,66 mln</span></div><div class="bar-track"><div class="bar-fill bf-1" style="width:32%;">1,66 mln</div></div></div>
+      <div style="margin-top:10px;padding:10px;background:var(--green-lt);border-left:3px solid var(--green);font-size:11px;color:var(--green);">
+        <strong>CCR 2,60:</strong> CFO ponad 2,6x wyższe niż zysk netto. Zysk jest "prawdziwy" — gotówka generowana solidnie.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 6. FLAGI ── -->
+<section id="flagi">
+  <div class="sec-label">Sekcja 6 z 6</div>
+  <div class="sec-title">Tablica Flag Ryzyka</div>
+  <div class="sec-insight">3 flagi czerwone aktywne w 2025, w tym Interest Coverage poniżej 2x — krytyczny próg dla kredytodawców. Trend: każdy rok więcej flag niż poprzedni.</div>
+
+  <table class="flags">
+    <thead>
+      <tr><th>Obszar / Flaga</th><th>2023</th><th>2024</th><th>2025</th><th>Wniosek analityczny</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Current Ratio &lt; 1,5</td>
+        <td><span class="flag-ok">OK</span></td><td><span class="flag-ok">OK</span></td><td><span class="flag-ok">OK</span></td>
+        <td>Brak alarmu — płynność bieżąca w normie</td>
+      </tr>
+      <tr>
+        <td>Quick Ratio &lt; 1,0</td>
+        <td><span class="flag-warn">UWAGA</span></td><td><span class="flag-warn">UWAGA</span></td><td><span class="flag-warn">UWAGA</span></td>
+        <td>Strukturalna zależność od zapasów — niemożliwość szybkiej spłaty bez ich upłynnienia</td>
+      </tr>
+      <tr>
+        <td>Cash Ratio bardzo niski</td>
+        <td><span class="flag-warn">NISKI</span></td><td><span class="flag-red">KRYT.</span></td><td><span class="flag-red">KRYT.</span></td>
+        <td>Gotówka 756k PLN przy przychodach 160 mln — &lt; 0,5% obrotu. Brak poduszki bezpieczeństwa.</td>
+      </tr>
+      <tr>
+        <td>Debt to Equity &gt; 2,0</td>
+        <td><span class="flag-warn">WYSOKI</span></td><td><span class="flag-warn">WYSOKI</span></td><td><span class="flag-warn">WYSOKI</span></td>
+        <td>Strukturalnie wysokie zadłużenie — stabilne, ale ogranicza elastyczność finansową</td>
+      </tr>
+      <tr>
+        <td>CCR &lt; 1,0</td>
+        <td><span class="flag-red">ALARM</span></td><td><span class="flag-ok">OK</span></td><td><span class="flag-ok">OK</span></td>
+        <td>2023 był anomalią (CFO ujemne). 2024–2025 normalizacja — pozytywny sygnał.</td>
+      </tr>
+      <tr>
+        <td>Interest Coverage &lt; 2,0x</td>
+        <td><span class="flag-ok">OK 2,86x</span></td><td><span class="flag-ok">OK 2,52x</span></td><td><span class="flag-red">⚠ 1,97x</span></td>
+        <td style="color:var(--red);font-weight:600;">Poniżej 2x — sygnał do obserwacji. Przy dalszym spadku EBIT może zwiększać ryzyko finansowania i utrudniać negocjacje warunków kredytowych.</td>
+      </tr>
+      <tr>
+        <td>COGS rośnie szybciej niż sprzedaż</td>
+        <td><span class="flag-na">n/d</span></td><td><span class="flag-ok">NIE</span></td><td><span class="flag-red">TAK</span></td>
+        <td>2025: sprzedaż +10,5%, COGS +12,1%. Presja na marżę brutto — mix lub ceny zakupu.</td>
+      </tr>
+      <tr>
+        <td>Marża netto spada r/r</td>
+        <td><span class="flag-na">n/d</span></td><td><span class="flag-warn">TAK</span></td><td><span class="flag-warn">TAK</span></td>
+        <td>Trzeci rok z rzędu erozja marży netto. 2,14% → 1,42% → 1,03%. Kierunek: poniżej 1%.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+    <div style="background:var(--red-lt);border-left:4px solid var(--red);padding:16px 18px;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--red);margin-bottom:8px;">Flaga Krytyczna — 2025</div>
+      <div style="font-weight:600;margin-bottom:4px;">Interest Coverage 1,97x</div>
+      <div style="font-size:12px;color:var(--neutral);">EBIT pokrywa odsetki z niewielką nadwyżką. Dalszy spadek wyniku operacyjnego może zwiększać ryzyko refinansowania i pogarszać warunki dostępu do kredytu.</div>
+    </div>
+    <div style="background:var(--amber-lt);border-left:4px solid var(--amber);padding:16px 18px;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--amber);margin-bottom:8px;">Trend Do Obserwacji</div>
+      <div style="font-weight:600;margin-bottom:4px;">AP jako dźwignia WC</div>
+      <div style="font-size:12px;color:var(--neutral);">Poprawa KON w 100% wyjaśniona wydłużaniem terminów dostawcom. DPO: 29 → 54 dni. Limit tego mechanizmu jest skończony.</div>
+    </div>
+    <div style="background:var(--red-lt);border-left:4px solid var(--red);padding:16px 18px;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--red);margin-bottom:8px;">Paradoks Wzrostu</div>
+      <div style="font-weight:600;margin-bottom:4px;">Sprzedaż ↑ EBIT ↓</div>
+      <div style="font-size:12px;color:var(--neutral);">+10,5% przychodu. −26,5% EBIT. −46,7% zysku netto w 3 lata. Wzrost obrotu nie przekłada się na zysk — pytanie o cenową politykę woluminową.</div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<!-- DIAGNOZA -->
+<div class="verdict" id="diagnoza">
+  <div class="wrap">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.3em;text-transform:uppercase;color:#7EB8E8;margin-bottom:16px;">Diagnoza strategiczna — podsumowanie</div>
+    <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;margin-bottom:36px;line-height:1.2;">Trzy tezy, które wyjaśniają obraz GRANULAT 2023–2025</div>
+    <div class="v-grid">
+      <div class="v-col">
+        <h4 class="red">1. Wzrost bez zysku</h4>
+        <div class="v-item"><span class="v-icon">◆</span><span>Sprzedaż 2025 wyższa o 10,5% — rekord 3-letni. Ale zysk netto niższy o 47% vs 2023. To klasyczna pułapka woluminowa: wzrost kupiany kosztem marży.</span></div>
+        <div class="v-item"><span class="v-icon">◆</span><span>COGS rośnie szybciej niż sprzedaż (+1,5 pp różnicy). Pytanie: czy wzrost to nowe kontrakty niskomerżowe (poliolefiny?) czy presja cenowa w istniejącym portfelu?</span></div>
+        <div class="v-item"><span class="v-icon">◆</span><span>Jeśli ten trend potrwa — w 2026 roku EBIT może spaść poniżej kosztów odsetek. Interest Coverage już wynosi 1,97x.</span></div>
+      </div>
+      <div class="v-col">
+        <h4 class="amber">2. CFO — siła pozorna</h4>
+        <div class="v-item"><span class="v-icon">◆</span><span>CFO 4,3 mln przy zysku netto 1,66 mln — CCR 2,60. Zysk jest „prawdziwy". To mocny sygnał jakości.</span></div>
+        <div class="v-item"><span class="v-icon">◆</span><span>Ale mechanizm jest transparentny: DPO wzrosło z 29 do 54 dni. Cała poprawa KON pochodzi z finansowania dostawcami, nie z optymalizacji zapasów czy przyspieszenia inkasa.</span></div>
+        <div class="v-item"><span class="v-icon">◆</span><span>Ten mechanizm ma sufit. Dostawcy nie będą nieskończenie wydłużać terminów. Gdy DPO się ustabilizuje — CFO spadnie do poziomu zysku operacyjnego.</span></div>
+      </div>
+      <div class="v-col">
+        <h4 class="blue">3. Czas na decyzję strukturalną</h4>
+        <div class="v-item"><span class="v-icon">◆</span><span>Usługi obce +0,99 pp jako % przychodów w 2 lata — wzrost nieproporcjonalny do sprzedaży. Wymaga przeglądu kontraktów i weryfikacji modelu obsługi.</span></div>
+        <div class="v-item"><span class="v-icon">◆</span><span>Interest Coverage 1,97x to sygnał do monitorowania. Przy kontynuacji trendu może utrudniać refinansowanie lub negocjacje nowych linii kredytowych.</span></div>
+        <div class="v-item"><span class="v-icon">◆</span><span>ROE 10,8% przy D/E 2,67 — zwrot z kapitału własnego jest niski względem zastosowanej dźwigni. Sugeruje potrzebę repricingu portfela lub poprawy efektywności kosztowej.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footnote">
+  <strong>Źródła danych:</strong> Sprawozdanie roczne GRANULAT 2025 (dane za 2025 i porównawcze 2024), Sprawozdanie roczne GRANULAT 2024 (dane za 2024 i porównawcze 2023). Wszystkie kwoty w PLN. Zysk brutto na sprzedaży = Przychody − COGS (gross profit, nie „zysk brutto przed podatkiem"). CFS = Cash Flow Sales = zysk ze sprzedaży − zmiana KON. Interest Coverage = EBIT / koszty odsetek. CCR = CFO / zysk netto. KON = należności handlowe + zapasy − zobowiązania handlowe. Niniejszy dokument ma charakter wyłącznie analityczny i nie stanowi rekomendacji inwestycyjnej.
+</div>
+
+</body>
+</html>
