@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Granulat vs KGL — Analiza Porównawcza</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0D0D0D;
+    --paper: #F7F4EE;
+    --rule: #C8C0B0;
+    --g-blue: #1A3A5C;
+    --g-accent: #2E7EB8;
+    --k-red: #8B1A1A;
+    --k-accent: #C0392B;
+    --gold: #B8860B;
+    --green: #1A6B3A;
+    --amber: #D4860A;
+    --neutral: #6B6258;
+    --bg-light: #EFEAE0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    font-size: 14px;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 80px 60px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 59px,
+      rgba(255,255,255,0.03) 59px,
+      rgba(255,255,255,0.03) 60px
+    );
+  }
+  .cover-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--rule);
+    margin-bottom: 40px;
+  }
+  .cover h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 56px;
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .cover h1 span.vs {
+    color: var(--gold);
+    font-style: italic;
+  }
+  .cover-sub {
+    font-size: 18px;
+    color: var(--rule);
+    font-weight: 300;
+    margin-bottom: 48px;
+    letter-spacing: 0.02em;
+  }
+  .cover-meta {
+    display: flex;
+    gap: 48px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 32px;
+  }
+  .cover-meta-item label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rule);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .cover-meta-item span {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+  section {
+    padding: 64px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--neutral);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .section-insight {
+    font-size: 15px;
+    color: var(--neutral);
+    font-weight: 300;
+    max-width: 680px;
+    margin-bottom: 40px;
+    font-style: italic;
+  }
+
+  /* ── HEADLINE NUMBERS ── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-bottom: 48px;
+  }
+  .kpi-cell {
+    background: var(--paper);
+    padding: 24px 20px;
+    text-align: center;
+    position: relative;
+  }
+  .kpi-cell .kpi-company {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .kpi-cell.gran .kpi-company { color: var(--g-blue); }
+  .kpi-cell.kgl .kpi-company { color: var(--k-red); }
+  .kpi-cell .kpi-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .kpi-cell.gran .kpi-val { color: var(--g-blue); }
+  .kpi-cell.kgl .kpi-val { color: var(--k-red); }
+  .kpi-cell .kpi-label {
+    font-size: 11px;
+    color: var(--neutral);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .kpi-cell .kpi-trend {
+    position: absolute;
+    top: 12px; right: 12px;
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+  .trend-up { background: #E8F5E9; color: var(--green); }
+  .trend-dn { background: #FDEDED; color: var(--k-red); }
+  .trend-flat { background: var(--bg-light); color: var(--neutral); }
+
+  /* ── MASTER COMPARISON TABLE ── */
+  .cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .cmp-table thead tr:first-child th {
+    padding: 14px 16px 8px;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    border-bottom: 3px solid;
+    text-align: center;
+  }
+  .cmp-table thead tr:first-child th:nth-child(2),
+  .cmp-table thead tr:first-child th:nth-child(3),
+  .cmp-table thead tr:first-child th:nth-child(4) { 
+    color: var(--g-blue); 
+    border-color: var(--g-blue);
+    background: rgba(26,58,92,0.04);
+  }
+  .cmp-table thead tr:first-child th:nth-child(5),
+  .cmp-table thead tr:first-child th:nth-child(6),
+  .cmp-table thead tr:first-child th:nth-child(7) { 
+    color: var(--k-red); 
+    border-color: var(--k-red);
+    background: rgba(139,26,26,0.04);
+  }
+  .cmp-table thead tr:first-child th:first-child {
+    background: transparent;
+    border: none;
+  }
+  .cmp-table thead tr:nth-child(2) th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--neutral);
+    padding: 6px 16px 10px;
+    text-align: right;
+    border-bottom: 1px solid var(--rule);
+  }
+  .cmp-table thead tr:nth-child(2) th:first-child { text-align: left; }
+
+  .cmp-table tbody tr { border-bottom: 1px solid var(--bg-light); }
+  .cmp-table tbody tr:hover { background: rgba(0,0,0,0.02); }
+  .cmp-table tbody tr.section-row td {
+    padding: 18px 16px 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--neutral);
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg-light);
+  }
+  .cmp-table tbody tr.total-row td {
+    font-weight: 600;
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    background: rgba(0,0,0,0.03);
+  }
+  .cmp-table td {
+    padding: 10px 16px;
+    vertical-align: middle;
+  }
+  .cmp-table td:first-child {
+    font-size: 12.5px;
+    font-weight: 500;
+  }
+  .cmp-table td:not(:first-child) {
+    text-align: right;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+  }
+  .cmp-table td.gran-col { background: rgba(26,58,92,0.02); }
+  .cmp-table td.kgl-col { background: rgba(139,26,26,0.02); }
+  .cmp-table .pct { color: var(--neutral); font-size: 11px; }
+  .cmp-table .pos { color: var(--green); font-weight: 600; }
+  .cmp-table .neg { color: var(--k-red); font-weight: 600; }
+  .cmp-table .warn { color: var(--amber); font-weight: 600; }
+  .note-row td { font-size: 11px; color: var(--neutral); font-style: italic; padding-top: 4px; }
+
+  /* ── DELTA TABLE ── */
+  .delta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .delta-card {
+    border: 1px solid var(--rule);
+    padding: 24px;
+    background: var(--paper);
+  }
+  .delta-card h4 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid;
+  }
+  .delta-card.gran h4 { color: var(--g-blue); border-color: var(--g-blue); }
+  .delta-card.kgl h4 { color: var(--k-red); border-color: var(--k-red); }
+  .delta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--bg-light);
+    font-size: 12.5px;
+  }
+  .delta-row:last-child { border: none; }
+  .delta-label { color: var(--neutral); }
+  .delta-val { font-family: 'IBM Plex Mono', monospace; font-weight: 500; }
+
+  /* ── VISUAL BARS ── */
+  .bar-section { margin-bottom: 40px; }
+  .bar-group { margin-bottom: 20px; }
+  .bar-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .bar-track {
+    height: 28px;
+    background: var(--bg-light);
+    position: relative;
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: white;
+    font-weight: 500;
+    transition: width 0.6s ease;
+  }
+  .bar-fill.gran { background: var(--g-blue); }
+  .bar-fill.kgl { background: var(--k-red); }
+  .bar-fill.gran-2024 { background: var(--g-accent); }
+  .bar-fill.kgl-2024 { background: #C0392B; opacity: 0.75; }
+
+  /* ── VERDICT BAND ── */
+  .verdict {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 48px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+  .verdict-col h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+  .verdict-col.gran h3 { color: #7EB8E8; }
+  .verdict-col.kgl h3 { color: #E87E7E; }
+  .verdict-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .verdict-icon { flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+  .footnote {
+    padding: 32px 40px;
+    font-size: 11px;
+    color: var(--neutral);
+    font-style: italic;
+    border-top: 1px solid var(--rule);
+    background: var(--bg-light);
+  }
+
+  /* ── SCORECARD ── */
+  .scorecard {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-bottom: 40px;
+  }
+  .score-cell {
+    background: var(--paper);
+    padding: 16px 12px;
+    text-align: center;
+  }
+  .score-cell .s-metric {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--neutral);
+    margin-bottom: 10px;
+  }
+  .score-cell .s-winner {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 2px;
+    display: inline-block;
+    margin-bottom: 4px;
+  }
+  .s-winner.gran { background: rgba(26,58,92,0.1); color: var(--g-blue); }
+  .s-winner.kgl { background: rgba(139,26,26,0.1); color: var(--k-red); }
+  .s-winner.tie { background: var(--bg-light); color: var(--neutral); }
+  .score-cell .s-note { font-size: 10px; color: var(--neutral); }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-label">Analiza Porównawcza · Dystrybucja Tworzyw Sztucznych · 2023–2025E</div>
+  <h1>GRANULAT <span class="vs">vs</span> KGL</h1>
+  <div class="cover-sub">Segment dystrybucji — porównanie wyników finansowych i efektywności operacyjnej</div>
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <label>Zakres danych</label>
+      <span>2023 · 2024 · 2025 / 9M+E</span>
+    </div>
+    <div class="cover-meta-item">
+      <label>Waluta</label>
+      <span>mln PLN</span>
+    </div>
+    <div class="cover-meta-item">
+      <label>Źródła</label>
+      <span>Raporty roczne, kwartalne, szacunki własne</span>
+    </div>
+    <div class="cover-meta-item">
+      <label>Benchmarking</label>
+      <span>Marże · Dynamika · Efektywność SG&A</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- KPI ROW -->
+<section>
+  <div class="section-label">Kluczowe wskaźniki — ostatni pełny rok (2024)</div>
+  <div class="section-title">Snapshot finansowy</div>
+  <div class="section-insight">Dwie firmy z niemal identycznym poziomem przychodów, ale radykalnie różnym profilem marżowości i trajektorią wynikową.</div>
+
+  <div class="kpi-row">
+    <div class="kpi-cell gran">
+      <div class="kpi-company">GRANULAT</div>
+      <div class="kpi-val">145,1</div>
+      <div class="kpi-label">Przychód 2024 (mln PLN)</div>
+    </div>
+    <div class="kpi-cell gran">
+      <div class="kpi-val">9,74%</div>
+      <div class="kpi-label">Marża brutto 2024</div>
+      <div class="kpi-trend trend-up">▲ +0,58 pp</div>
+    </div>
+    <div class="kpi-cell gran">
+      <div class="kpi-val">3,51</div>
+      <div class="kpi-label">Wynik na sprzedaży (mln PLN)</div>
+    </div>
+    <div class="kpi-cell gran">
+      <div class="kpi-val">2,42%</div>
+      <div class="kpi-label">Marża operacyjna 2024</div>
+      <div class="kpi-trend trend-dn">▼ −0,72 pp</div>
+    </div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-cell kgl">
+      <div class="kpi-company">KGL Segment</div>
+      <div class="kpi-val">117,1</div>
+      <div class="kpi-label">Przychód 2024 (mln PLN)</div>
+    </div>
+    <div class="kpi-cell kgl">
+      <div class="kpi-val">14,30%</div>
+      <div class="kpi-label">Marża brutto 2024</div>
+      <div class="kpi-trend trend-up">▲ +1,39 pp</div>
+    </div>
+    <div class="kpi-cell kgl">
+      <div class="kpi-val">1,40</div>
+      <div class="kpi-label">Wynik na sprzedaży (mln PLN)</div>
+    </div>
+    <div class="kpi-cell kgl">
+      <div class="kpi-val">1,20%</div>
+      <div class="kpi-label">Marża operacyjna 2024</div>
+      <div class="kpi-trend trend-dn">▼ −0,99 pp</div>
+    </div>
+  </div>
+</section>
+
+<!-- MASTER TABLE -->
+<section>
+  <div class="section-label">Tabela porównawcza — pełne dane</div>
+  <div class="section-title">Rachunek wyników: 2023–2025</div>
+  <div class="section-insight">KGL dysponuje wyraźnie wyższą marżą brutto (+4,6 pp w 2024), lecz ponosi nieproporcjonalnie wysokie koszty SG&A, które erodują wynik na sprzedaży poniżej poziomu GRANULATu.</div>
+
+  <table class="cmp-table">
+    <thead>
+      <tr>
+        <th style="width:22%;"></th>
+        <th colspan="3">GRANULAT</th>
+        <th colspan="3">KGL — Segment Dystrybucja</th>
+      </tr>
+      <tr>
+        <th>Pozycja</th>
+        <th>2023</th>
+        <th>2024</th>
+        <th>2025</th>
+        <th>2023</th>
+        <th>2024</th>
+        <th>2025E</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="section-row"><td colspan="7">Przychody i marża brutto</td></tr>
+      <tr class="total-row">
+        <td>Przychody ze sprzedaży</td>
+        <td class="gran-col">145,12</td>
+        <td class="gran-col">145,09</td>
+        <td class="gran-col pos">160,39</td>
+        <td class="kgl-col">120,63</td>
+        <td class="kgl-col">117,09</td>
+        <td class="kgl-col warn">100,25</td>
+      </tr>
+      <tr>
+        <td>Zmiana r/r</td>
+        <td class="gran-col pct">—</td>
+        <td class="gran-col pct">−0,0%</td>
+        <td class="gran-col pos">+10,5%</td>
+        <td class="kgl-col pct">—</td>
+        <td class="kgl-col pct">−2,9%</td>
+        <td class="kgl-col neg">−14,4%</td>
+      </tr>
+      <tr>
+        <td>Zysk brutto na sprzedaży</td>
+        <td class="gran-col">13,29</td>
+        <td class="gran-col">14,14</td>
+        <td class="gran-col">13,65</td>
+        <td class="kgl-col">15,58</td>
+        <td class="kgl-col">16,74</td>
+        <td class="kgl-col warn">13,39</td>
+      </tr>
+      <tr class="total-row">
+        <td>Marża brutto</td>
+        <td class="gran-col">9,16%</td>
+        <td class="gran-col">9,74%</td>
+        <td class="gran-col warn">8,51%</td>
+        <td class="kgl-col pos">12,91%</td>
+        <td class="kgl-col pos">14,30%</td>
+        <td class="kgl-col pos">13,35%</td>
+      </tr>
+
+      <tr class="section-row"><td colspan="7">Wynik operacyjny (na sprzedaży)</td></tr>
+      <tr class="total-row">
+        <td>Wynik na sprzedaży</td>
+        <td class="gran-col">4,56</td>
+        <td class="gran-col">3,51</td>
+        <td class="gran-col">2,38</td>
+        <td class="kgl-col">2,64</td>
+        <td class="kgl-col">1,40</td>
+        <td class="kgl-col neg">−0,84</td>
+      </tr>
+      <tr class="total-row">
+        <td>Marża na sprzedaży</td>
+        <td class="gran-col pos">3,14%</td>
+        <td class="gran-col">2,42%</td>
+        <td class="gran-col warn">1,49%</td>
+        <td class="kgl-col warn">2,19%</td>
+        <td class="kgl-col warn">1,20%</td>
+        <td class="kgl-col neg">−0,84%</td>
+      </tr>
+
+      <tr class="section-row"><td colspan="7">Implied koszty SG&A (GP − EBIT segmentu)</td></tr>
+      <tr>
+        <td>Implied SG&A (mln PLN)</td>
+        <td class="gran-col">8,73</td>
+        <td class="gran-col">10,63</td>
+        <td class="gran-col">11,27</td>
+        <td class="kgl-col">12,94</td>
+        <td class="kgl-col">15,34</td>
+        <td class="kgl-col neg">14,23</td>
+      </tr>
+      <tr class="total-row">
+        <td>SG&A jako % przychodów</td>
+        <td class="gran-col">6,02%</td>
+        <td class="gran-col">7,33%</td>
+        <td class="gran-col warn">7,02%</td>
+        <td class="kgl-col neg">10,73%</td>
+        <td class="kgl-col neg">13,10%</td>
+        <td class="kgl-col neg">14,19%</td>
+      </tr>
+
+      <tr class="section-row"><td colspan="7">Spread: KGL minus GRANULAT (pp)</td></tr>
+      <tr>
+        <td>Spread marży brutto (KGL−GRAN)</td>
+        <td colspan="1" style="text-align:right; font-family:'IBM Plex Mono',monospace;" class="pos">+3,75 pp</td>
+        <td colspan="1" style="text-align:right; font-family:'IBM Plex Mono',monospace;" class="pos">+4,56 pp</td>
+        <td colspan="1" style="text-align:right; font-family:'IBM Plex Mono',monospace;" class="pos">+4,84 pp</td>
+        <td colspan="3" class="note-row" style="font-style:italic; color:#6B6258; font-size:11px;">KGL konsekwentnie droższy w zakupie / inny mix</td>
+      </tr>
+      <tr>
+        <td>Spread marży SG&A (KGL−GRAN)</td>
+        <td colspan="1" style="text-align:right; font-family:'IBM Plex Mono',monospace;" class="neg">+4,71 pp</td>
+        <td colspan="1" style="text-align:right; font-family:'IBM Plex Mono',monospace;" class="neg">+5,77 pp</td>
+        <td colspan="1" style="text-align:right; font-family:'IBM Plex Mono',monospace;" class="neg">+7,17 pp</td>
+        <td colspan="3" class="note-row" style="font-style:italic; color:#6B6258; font-size:11px;">Rosnąca nożycowa rozbieżność kosztowa</td>
+      </tr>
+      <tr class="total-row">
+        <td>Spread marży oper. (KGL−GRAN)</td>
+        <td colspan="1" style="text-align:right; font-family:'IBM Plex Mono',monospace;" class="neg">−0,95 pp</td>
+        <td colspan="1" style="text-align:right; font-family:'IBM Plex Mono',monospace;" class="neg">−1,22 pp</td>
+        <td colspan="1" style="text-align:right; font-family:'IBM Plex Mono',monospace;" class="neg">−2,33 pp</td>
+        <td colspan="3" class="note-row" style="font-style:italic; color:#6B6258; font-size:11px;">Luka pogłębia się każdy rok</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- BAR CHART: MARŻE -->
+<section>
+  <div class="section-label">Wizualizacja — profil marż</div>
+  <div class="section-title">Nożycowy efekt kosztów SG&A</div>
+  <div class="section-insight">KGL generuje ~4–5 pp wyższą marżę brutto, ale „zżera" ją kosztami operacyjnymi. Wynik na sprzedaży jest niższy niż GRANULATu we wszystkich okresach.</div>
+
+  <div class="bar-section">
+    <!-- MARŻA BRUTTO -->
+    <div style="margin-bottom:32px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--neutral); margin-bottom:16px; border-bottom:1px solid var(--rule); padding-bottom:8px;">Marża brutto na sprzedaży (%)</div>
+
+      <div class="bar-group">
+        <div class="bar-header"><span>GRANULAT 2023</span><span style="font-family:'IBM Plex Mono',monospace;">9,16%</span></div>
+        <div class="bar-track"><div class="bar-fill gran" style="width:64%;">9,16%</div></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar-header"><span>GRANULAT 2024</span><span style="font-family:'IBM Plex Mono',monospace;">9,74%</span></div>
+        <div class="bar-track"><div class="bar-fill gran" style="width:68%;">9,74%</div></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar-header"><span>GRANULAT 2025</span><span style="font-family:'IBM Plex Mono',monospace; color:var(--amber);">8,51%</span></div>
+        <div class="bar-track"><div class="bar-fill gran" style="width:60%; opacity:0.7;">8,51%</div></div>
+      </div>
+
+      <div style="height:16px;"></div>
+
+      <div class="bar-group">
+        <div class="bar-header"><span>KGL Segment 2023</span><span style="font-family:'IBM Plex Mono',monospace; color:var(--k-red);">12,91%</span></div>
+        <div class="bar-track"><div class="bar-fill kgl" style="width:90%;">12,91%</div></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar-header"><span>KGL Segment 2024</span><span style="font-family:'IBM Plex Mono',monospace; color:var(--k-red);">14,30%</span></div>
+        <div class="bar-track"><div class="bar-fill kgl" style="width:100%;">14,30%</div></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar-header"><span>KGL Segment 2025E</span><span style="font-family:'IBM Plex Mono',monospace; color:var(--amber);">13,35%</span></div>
+        <div class="bar-track"><div class="bar-fill kgl" style="width:93%; opacity:0.75;">13,35%</div></div>
+      </div>
+    </div>
+
+    <!-- WYNIK NA SPRZEDAŻY -->
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--neutral); margin-bottom:16px; border-bottom:1px solid var(--rule); padding-bottom:8px;">Marża na sprzedaży — po kosztach SG&A (%)</div>
+
+      <div class="bar-group">
+        <div class="bar-header"><span>GRANULAT 2023</span><span style="font-family:'IBM Plex Mono',monospace; color:var(--green);">3,14%</span></div>
+        <div class="bar-track"><div class="bar-fill gran" style="width:100%; background:var(--green);">3,14%</div></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar-header"><span>GRANULAT 2024</span><span style="font-family:'IBM Plex Mono',monospace;">2,42%</span></div>
+        <div class="bar-track"><div class="bar-fill gran" style="width:77%;">2,42%</div></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar-header"><span>GRANULAT 2025</span><span style="font-family:'IBM Plex Mono',monospace; color:var(--amber);">1,49%</span></div>
+        <div class="bar-track"><div class="bar-fill gran" style="width:47%; opacity:0.8;">1,49%</div></div>
+      </div>
+
+      <div style="height:16px;"></div>
+
+      <div class="bar-group">
+        <div class="bar-header"><span>KGL Segment 2023</span><span style="font-family:'IBM Plex Mono',monospace; color:var(--amber);">2,19%</span></div>
+        <div class="bar-track"><div class="bar-fill kgl" style="width:70%;">2,19%</div></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar-header"><span>KGL Segment 2024</span><span style="font-family:'IBM Plex Mono',monospace; color:var(--k-red);">1,20%</span></div>
+        <div class="bar-track"><div class="bar-fill kgl" style="width:38%;">1,20%</div></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar-header"><span>KGL Segment 2025E</span><span style="font-family:'IBM Plex Mono',monospace; color:var(--k-red); font-weight:700;">−0,84%</span></div>
+        <div class="bar-track">
+          <div style="height:100%; background:rgba(139,26,26,0.15); display:flex; align-items:center; padding-left:10px;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--k-red); font-weight:700;">STRATA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCORECARD -->
+<section>
+  <div class="section-label">Ocena według kategorii — 2024</div>
+  <div class="section-title">Kto wygrywa w każdym wymiarze?</div>
+
+  <div class="scorecard">
+    <div class="score-cell">
+      <div class="s-metric">Wzrost przychodów</div>
+      <div class="s-winner tie">REMIS</div>
+      <div class="s-note">Oba ok. 0% r/r w 2024</div>
+    </div>
+    <div class="score-cell">
+      <div class="s-metric">Marża brutto</div>
+      <div class="s-winner kgl">KGL +4,6 pp</div>
+      <div class="s-note">Wyższy mix lub cena</div>
+    </div>
+    <div class="score-cell">
+      <div class="s-metric">Efektywność SG&A</div>
+      <div class="s-winner gran">GRANULAT</div>
+      <div class="s-note">7,3% vs 13,1% przychodów</div>
+    </div>
+    <div class="score-cell">
+      <div class="s-metric">Marża oper.</div>
+      <div class="s-winner gran">GRANULAT</div>
+      <div class="s-note">2,42% vs 1,20%</div>
+    </div>
+    <div class="score-cell">
+      <div class="s-metric">Trajektoria 2025</div>
+      <div class="s-winner gran">GRANULAT</div>
+      <div class="s-note">Zysk vs strata KGL</div>
+    </div>
+  </div>
+
+  <div class="delta-grid">
+    <div class="delta-card gran">
+      <h4>GRANULAT — mocne i słabe strony</h4>
+      <div class="delta-row"><span class="delta-label">✓ Efektywność SG&A</span><span class="delta-val" style="color:var(--green);">~7% przychodów</span></div>
+      <div class="delta-row"><span class="delta-label">✓ Wzrost przychodów 2025</span><span class="delta-val" style="color:var(--green);">+10,5% r/r</span></div>
+      <div class="delta-row"><span class="delta-label">✓ Marża oper. dodatnia</span><span class="delta-val" style="color:var(--green);">1,49% w 2025</span></div>
+      <div class="delta-row"><span class="delta-label">✗ Niższa marża brutto</span><span class="delta-val" style="color:var(--amber);">8,51% w 2025</span></div>
+      <div class="delta-row"><span class="delta-label">✗ Erozja marży oper.</span><span class="delta-val" style="color:var(--k-red);">3,14% → 1,49%</span></div>
+    </div>
+    <div class="delta-card kgl">
+      <h4>KGL Segment — mocne i słabe strony</h4>
+      <div class="delta-row"><span class="delta-label">✓ Wyższa marża brutto</span><span class="delta-val" style="color:var(--green);">13,35% w 2025E</span></div>
+      <div class="delta-row"><span class="delta-label">✓ GP w wartości abs.</span><span class="delta-val" style="color:var(--green);">13,39 mln PLN 2025E</span></div>
+      <div class="delta-row"><span class="delta-label">✗ Koszty SG&A nieproporcjonalne</span><span class="delta-val" style="color:var(--k-red);">14,19% przychodów</span></div>
+      <div class="delta-row"><span class="delta-label">✗ Strata na sprzedaży 2025E</span><span class="delta-val" style="color:var(--k-red);">−0,84 mln PLN</span></div>
+      <div class="delta-row"><span class="delta-label">✗ Spadek przychodów</span><span class="delta-val" style="color:var(--k-red);">−14,4% r/r 2025E</span></div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /container -->
+
+<!-- VERDICT -->
+<div class="verdict">
+  <div class="verdict-col gran">
+    <h3>GRANULAT — Diagnoza</h3>
+    <div class="verdict-item">
+      <span class="verdict-icon">◆</span>
+      <span>Model lean: niska marża brutto, ale radykalnie szczupła struktura kosztowa. SG&A poniżej 7,5% przychodów to benchmark klasy światowej w dystrybucji polimerów.</span>
+    </div>
+    <div class="verdict-item">
+      <span class="verdict-icon">◆</span>
+      <span>Wzrost w 2025 (+10,5%) sygnalizuje albo odzyskanie wolumenu, albo ekspansję geograficzną/asortymentową. To kluczowa różnica wobec kurczącego się KGL.</span>
+    </div>
+    <div class="verdict-item">
+      <span class="verdict-icon">◆</span>
+      <span>Ryzyko: erozja marży brutto (9,74% → 8,51%). Jeśli trend się utrzyma, poduszka kosztowa zniknie. Pytanie: czy to efekt mixu (więcej poliolefin?) czy presji cenowej?</span>
+    </div>
+  </div>
+  <div class="verdict-col kgl">
+    <h3>KGL Segment — Diagnoza</h3>
+    <div class="verdict-item">
+      <span class="verdict-icon">◆</span>
+      <span>Paradoks KGL: wyższa jakość portfela (mix specjalistyczny, wyższa marża brutto), ale strukturalne przekosztkowanie pochłaniające całą tę premię i generujące stratę.</span>
+    </div>
+    <div class="verdict-item">
+      <span class="verdict-icon">◆</span>
+      <span>SG&A na poziomie 13–14% przychodów sugeruje alokację kosztów korporacyjnych grupy na segment — nie można tego skali osiągnąć w czystej dystrybucji specjalistycznej.</span>
+    </div>
+    <div class="verdict-item">
+      <span class="verdict-icon">◆</span>
+      <span>Kluczowe pytanie strategiczne: czy KGL jest w stanie obronić marżę brutto 13%+ przy rosnącym wolumenie, czy ta marża jest artefaktem kurczącego się, selektywnego portfela?</span>
+    </div>
+  </div>
+</div>
+
+<div class="footnote container" style="max-width:none; margin:0; padding: 24px 60px;">
+  <strong>Źródła:</strong> GRANULAT: Raport roczny 2024, Raport roczny 2025. KGL: Raport 2023/2024, Raport III kw. 2025. KGL 2025E = 9M actual (74,93 mln PLN) + szacunek Q4'24 jako proxy Q4'25.
+  &nbsp;·&nbsp; Implied SG&A = Zysk brutto − Wynik na sprzedaży. &nbsp;·&nbsp; Niniejszy dokument ma charakter analityczny i nie stanowi rekomendacji inwestycyjnej.
+</div>
+
+</body>
+</html>
